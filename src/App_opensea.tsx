@@ -196,7 +196,7 @@ class App extends React.Component<any, any> {
             networkId
         });
 
-      
+
     };
 
     public subscribeProvider = async (provider: any) => {
@@ -206,20 +206,20 @@ class App extends React.Component<any, any> {
         provider.on("close", () => this.resetApp());
         provider.on("accountsChanged", async (accounts: string[]) => {
             await this.setState({address: accounts[0]});
-            
+
         });
         provider.on("chainChanged", async (chainId: number) => {
             const {web3} = this.state;
             const networkId = await web3.eth.net.getId();
             await this.setState({chainId, networkId});
-           
+
         });
 
         provider.on("networkChanged", async (networkId: number) => {
             const {web3} = this.state;
             const chainId = await web3.eth.chainId();
             await this.setState({chainId, networkId});
-            
+
         });
     };
 
@@ -233,7 +233,7 @@ class App extends React.Component<any, any> {
         await this.web3Modal.clearCachedProvider();
         this.setState({...INITIAL_STATE});
     };
-   
+
     public settokenAddress = (value: any) => {
         this.setState({tokenAddress: value.target.value})
     }
@@ -245,7 +245,7 @@ class App extends React.Component<any, any> {
     public setprice = (value: any) => {
         this.setState({price: value.target.value})
     }
-    
+
     public buy = async () => {
         // const provider = await this.web3Modal.connect();
         // const prov = new ethers.providers.Web3Provider(provider);
@@ -276,7 +276,7 @@ class App extends React.Component<any, any> {
         let web3 = new Web3(Web3.givenProvider);
         const accountAddress = await web3.eth.getAccounts();
 
-        
+
         try {
             // createBuyOrder  buy one nft
             ids.forEach(async element => {
@@ -291,7 +291,7 @@ class App extends React.Component<any, any> {
                 })
                 console.log(offer)
             });
-            
+
             // let assets: { tokenId: string; tokenAddress: string; }[] = []
             // ids.forEach(element => {
             //     assets.push({tokenId:element, tokenAddress:tokenAddress})
@@ -306,30 +306,30 @@ class App extends React.Component<any, any> {
             // console.log(offer)
             // alert('成功')
         } catch (error) {
-            
+
             console.log(error)
             alert('失败')
         }
-        
+
     }
-    
+
     public getData = async() => {
         const tokenAddress = this.state.tokenAddress;
         if(tokenAddress === ""){
             alert('请输入tokenAddress！') //0x256d31fb5439119026f1301d40ae748a8838c979
             return
         }
-        
+
         const seaport = new OpenSeaPort(window.web3.currentProvider, {
-            networkName: Network.Rinkeby, //todo 
+            networkName: Network.Rinkeby, //todo
         })
         const asset = await seaport.api.getAsset({
-            tokenAddress: tokenAddress, 
+            tokenAddress: tokenAddress,
             tokenId:null
         })
         const status = asset.collection.stats as any
         console.log(asset.collection.stats)
-        
+
         this.setState({average_price: status['average_price'],floor_price: status['floor_price'],total_volume:status['total_volume'],one_day_average_price:status['one_day_average_price']})
     }
 
@@ -364,30 +364,30 @@ class App extends React.Component<any, any> {
                             <SBalances>
                                 <Column center>
                                     {/* <h6>当前时间:{this.state.curTime}</h6> */}
-                                    <br /><h6>项目信息</h6>
-                                        <p>地板价：{floor_price}</p><br />
-                                        <p>均价：{average_price}</p><br />
-                                        <p>总交易量：{total_volume}</p><br />
-                                        <p>当日均价：{one_day_average_price}</p>
+                                    <br /><h6>Project Detail</h6>
+                                        <p>Floor Price：{floor_price}</p><br />
+                                        <p>Average：{average_price}</p><br />
+                                        <p>Total Volume：{total_volume}</p><br />
+                                        <p>Average(Day)：{one_day_average_price}</p>
                                         <br />
                                     <STestButtonContainer>
-                                        <h6>NFT合约地址</h6>
+                                        <h6>NFT Contract Address</h6>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenAddress} onChange={this.settokenAddress}></STestInput>
-                                        <h6>NFT ID 逗号隔开</h6>
+                                        <h6>TokenID(separate by ,)</h6>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenIds} onChange={this.settokenIds}></STestInput>
-                                        <h6>挂单价格</h6>
+                                        <h6>Listed Price</h6>
                                         <STestInput style={{height:'40px'}} value={this.state.price} onChange={this.setprice}></STestInput>
-                                        
+
                                         <STestButton left onClick={() => this.getData()}>
-                                            查询
+                                            Query
                                         </STestButton>
                                         <STestButton left onClick={() => this.buy()}>
-                                            挂单
+                                            Buy
                                         </STestButton>
-            
+
                                     </STestButtonContainer>
                                 </Column>
-                                
+
                             </SBalances>
                         ) : (
                             <SLanding center>
