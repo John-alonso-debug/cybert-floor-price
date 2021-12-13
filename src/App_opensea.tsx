@@ -252,17 +252,17 @@ class App extends React.Component<any, any> {
         // open modal
         const tokenIds = this.state.tokenIds;
         if(tokenIds === ""){
-            alert('请输入NFTID！')
+            alert('input token ID!')
             return
         }
         const tokenAddress = this.state.tokenAddress;
         if(tokenAddress === ""){
-            alert('请输入tokenAddress！')
+            alert('input token contract address！')
             return
         }
         const price = this.state.price;
         if(price === 0){
-            alert('请输入price！')
+            alert('input price > 0！')
             return
         }
         const ids = tokenIds.split(',')
