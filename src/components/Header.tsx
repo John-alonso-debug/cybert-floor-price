@@ -29,7 +29,7 @@ const SActiveChain = styled(SActiveAccount)`
   text-align: left;
   align-items: flex-start;
   & p {
-    font-size: 0.8em;
+    font-size: 0.5em;
     margin: 0;
     padding: 0;
   }
@@ -84,8 +84,10 @@ const Header = (props: IHeaderProps) => {
   const chainData = chainId ? getChainData(chainId) : null;
   return (
     <SHeader {...props}>
+
       {connected && chainData ? (
         <SActiveChain>
+          <p><Banner /></p>
           <p>{`Connected to`}</p>
           <p>{chainData.name}</p>
         </SActiveChain>

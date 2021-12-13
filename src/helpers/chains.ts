@@ -52,7 +52,7 @@ const supportedChains: IChainData[] = [
     }
   },
   {
-    name: "Ethereum Rinkeby",
+    name: "Rinkeby TestNet",
     short_name: "rin",
     chain: "ETH",
     network: "rinkeby",
@@ -219,6 +219,22 @@ const supportedChains: IChainData[] = [
     chain_id: 56,
     network_id: 56,
     rpc_url: "https://bsc-dataseed1.defibit.io/",
+    native_currency: {
+      symbol: "BNB",
+      name: "BNB",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
+  },
+  {
+    name: "Polygon Matic",
+    short_name: "Matic",
+    chain: "smartchain",
+    network: "mainnet",
+    chain_id: 137,
+    network_id: 137,
+    rpc_url: "https://polygonscan.com/",
     native_currency: {
       symbol: "BNB",
       name: "BNB",

@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import logo from "../assets/web3modal-logo.png";
+import logo from "../assets/little4.png";
 import { fonts, colors } from "../styles";
 
 const SBannerWrapper = styled.div`
@@ -26,7 +26,7 @@ const SBanner = styled.div`
 const Banner = () => (
   <SBannerWrapper>
     <SBanner />
-    <span>{`Web3Modal`}</span>
+    <span>{`CybertLab`}</span>
   </SBannerWrapper>
 );
 

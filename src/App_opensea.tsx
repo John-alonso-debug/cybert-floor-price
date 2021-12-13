@@ -22,6 +22,7 @@ import {getChainData} from "./helpers/utilities";
 import {IAssetData} from "./helpers/types";
 import {fonts} from "./styles";
 import "./style.css";
+import {ethers,BigNumber} from "ethers";
 
 
 const SLayout = styled.div`
@@ -110,6 +111,7 @@ interface IAppState {
     total_volume:number;
     one_day_average_price:number;
     price:number;
+    approved:boolean
 }
 
 const INITIAL_STATE: IAppState = {
@@ -131,7 +133,9 @@ const INITIAL_STATE: IAppState = {
     average_price:0,
     floor_price:0,
     total_volume:0,
-    price:0
+    price:0,
+    approved: false,
+
 };
 
 function initWeb3(provider: any) {
@@ -167,10 +171,15 @@ class App extends React.Component<any, any> {
         });
     }
 
+
+
+
     public componentDidMount() {
         if (this.web3Modal.cachedProvider) {
             this.onConnect();
         }
+
+
     }
 
     public onConnect = async () => {
@@ -196,7 +205,8 @@ class App extends React.Component<any, any> {
             connected: true,
             address,
             chainId,
-            networkId
+            networkId,
+            approved:false
         });
 
 
@@ -210,11 +220,15 @@ class App extends React.Component<any, any> {
         provider.on("accountsChanged", async (accounts: string[]) => {
             await this.setState({address: accounts[0]});
 
+            await  this.getApproval();
+            //await this.setState({approved: false});
+
         });
         provider.on("chainChanged", async (chainId: number) => {
             const {web3} = this.state;
             const networkId = await web3.eth.net.getId();
             await this.setState({chainId, networkId});
+            await  this.getApproval();
 
         });
 
@@ -222,6 +236,7 @@ class App extends React.Component<any, any> {
             const {web3} = this.state;
             const chainId = await web3.eth.chainId();
             await this.setState({chainId, networkId});
+            await  this.getApproval();
 
         });
     };
@@ -235,6 +250,7 @@ class App extends React.Component<any, any> {
         }
         await this.web3Modal.clearCachedProvider();
         this.setState({...INITIAL_STATE});
+        //set opensea contract
     };
 
     public settokenAddress = (value: any) => {
@@ -249,18 +265,42 @@ class App extends React.Component<any, any> {
         this.setState({price: value.target.value})
     }
 
+
+
+    public getApproval = async ()=> {
+        const provider = await this.web3Modal.connect();
+        const prov = new ethers.providers.Web3Provider(provider);
+        let web3 = new Web3(Web3.givenProvider);
+        const accountAddress = await web3.eth.getAccounts();
+        const abi = [
+            "function approve(address spender, uint256 amount) returns (bool)",
+            "function allowance(address _owner, address _spender) public view returns (uint)"
+        ];
+        // rinkeby testnet weth address 0xc778417e063141139fce010982780140aa0cd5ab ,https://rinkeby.etherscan.io/address/0xc778417e063141139fce010982780140aa0cd5ab#code
+        // rinkeby testnet opensea contract 0x82d102457854c985221249f86659c9d6cf12aa72
+        const currency = new ethers.Contract("0xc778417e063141139fce010982780140aa0cd5ab", abi, prov.getSigner())
+       // const allowance = await currency.allowance(account, getEthAddress(vaultInfo.contractAddress));
+        const allowance = await currency.allowance(accountAddress[0], "0x82d102457854c985221249f86659c9d6cf12aa72");
+        if (allowance.gte(BigNumber.from('100000000000000'))){
+            this.setState({approved:true})
+        } else {
+            this.setState({approved:false})
+        }
+
+    }
+
     public buy = async () => {
         // const provider = await this.web3Modal.connect();
         // const prov = new ethers.providers.Web3Provider(provider);
         // open modal
         const tokenIds = this.state.tokenIds;
         if(tokenIds === ""){
-            alert('input token ID!')
+            alert('Input token ID!')
             return
         }
         const tokenAddress = this.state.tokenAddress;
         if(tokenAddress === ""){
-            alert('input token contract address！')
+            alert('Input token contract address！')
             return
         }
         const price = this.state.price;
@@ -290,7 +330,7 @@ class App extends React.Component<any, any> {
                     },
                     accountAddress: accountAddress[0],
                     // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-                    startAmount: 0.13,
+                    startAmount: price,
                 })
                 console.log(offer)
             });
@@ -311,7 +351,7 @@ class App extends React.Component<any, any> {
         } catch (error) {
 
             console.log(error)
-            alert('失败')
+            alert('make offer failed')
         }
 
     }
@@ -319,7 +359,7 @@ class App extends React.Component<any, any> {
     public getData = async() => {
         const tokenAddress = this.state.tokenAddress;
         if(tokenAddress === ""){
-            alert('请输入tokenAddress！') //0x256d31fb5439119026f1301d40ae748a8838c979
+            alert('NFT contract address required！') //0x256d31fb5439119026f1301d40ae748a8838c979
             return
         }
 
@@ -376,17 +416,28 @@ class App extends React.Component<any, any> {
                                     <STestButtonContainer>
                                         <h4>NFT Contract Address</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenAddress} onChange={this.settokenAddress}></STestInput>
-                                        <h4>TokenID(separate by ,)</h4>
+                                        <h4>TokenID(separate by ",")</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenIds} onChange={this.settokenIds}></STestInput>
+
                                         <h4>Listed Price</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.price} onChange={this.setprice}></STestInput>
 
                                         <STestButton left onClick={() => this.getData()}>
                                             Query
                                         </STestButton>
+                                        {this.state.approved !== true ?
+                                            <div>
+                                        <h6 style={{color:'Brown'}}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>
+                                        <h6 style={{color:'Brown'}}>For safety reasons, you are strongly advised to do the permission on Opensea market.</h6>
+                                        <STestButton left onClick={() => this.getApproval()}>
+                                            Check Approved WETH permission
+                                        </STestButton></div>
+                                            :
+
                                         <STestButton left onClick={() => this.buy()}>
-                                            Buy
+                                            Make Offer
                                         </STestButton>
+                                            }
 
                                     </STestButtonContainer>
                                 </Column>
@@ -394,7 +445,7 @@ class App extends React.Component<any, any> {
                             </SBalances>
                         ) : (
                             <SLanding center>
-                                <h6>{`Test Web3Modal`}</h6>
+                                <h6>{`Cybert Lab for Opensea Floor Price`}</h6>
                                 <ConnectButton onClick={this.onConnect}/>
                             </SLanding>
                         )}
