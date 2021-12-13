@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-05-22 00:27:06
- * @LastEditTime: 2021-12-10 18:02:49
+ * @LastEditTime: 2021-12-13 11:28:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /frontend/src/App_sign.tsx
@@ -21,7 +21,7 @@ import ConnectButton from "./components/ConnectButton";
 import {getChainData} from "./helpers/utilities";
 import {IAssetData} from "./helpers/types";
 import {fonts} from "./styles";
-
+import "./style.css";
 
 
 const SLayout = styled.div`
@@ -29,6 +29,8 @@ const SLayout = styled.div`
   width: 100%;
   min-height: 100vh;
   text-align: center;
+  font-family:vt323;
+  font-size:30px;
 `;
 
 const SContent = styled(Wrapper)`
@@ -56,7 +58,7 @@ const SLanding = styled(Column)`
 const SBalances = styled(SLanding)`
   height: 100%;
   & h3 {
-    padding-top: 30px;
+    padding-top: 10px;
   }
 `;
 
@@ -75,6 +77,7 @@ const STestButton = styled(Button)`
   width: 100%;
   max-width: 175px;
   margin: 12px;
+  font-family:vt323;
 `;
 
 const STestInput = styled.textarea`
@@ -364,18 +367,18 @@ class App extends React.Component<any, any> {
                             <SBalances>
                                 <Column center>
                                     {/* <h6>当前时间:{this.state.curTime}</h6> */}
-                                    <br /><h6>Project Detail</h6>
-                                        <p>Floor Price：{floor_price}</p><br />
-                                        <p>Average：{average_price}</p><br />
-                                        <p>Total Volume：{total_volume}</p><br />
+                                    <br /><h4>Project Detail</h4>
+                                        <p>Floor Price：{floor_price}</p>
+                                        <p>Average：{average_price}</p>
+                                        <p>Total Volume：{total_volume}</p>
                                         <p>Average(Day)：{one_day_average_price}</p>
                                         <br />
                                     <STestButtonContainer>
-                                        <h6>NFT Contract Address</h6>
+                                        <h4>NFT Contract Address</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenAddress} onChange={this.settokenAddress}></STestInput>
-                                        <h6>TokenID(separate by ,)</h6>
+                                        <h4>TokenID(separate by ,)</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.tokenIds} onChange={this.settokenIds}></STestInput>
-                                        <h6>Listed Price</h6>
+                                        <h4>Listed Price</h4>
                                         <STestInput style={{height:'40px'}} value={this.state.price} onChange={this.setprice}></STestInput>
 
                                         <STestButton left onClick={() => this.getData()}>

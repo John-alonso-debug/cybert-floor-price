@@ -91,6 +91,8 @@ export const globalStyle = `
     padding: 0;
   }
 
+ 
+
   body {
     font-family: ${fonts.family.OpenSans};
     font-style: normal;

@@ -1,0 +1,8 @@
+@font-face {
+    font-family: vt323;
+    src: url(./assets/VT323-Regular.ttf);
+}
+
+p {
+    font-size: 16px;
+}
