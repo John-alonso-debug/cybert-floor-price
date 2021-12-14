@@ -330,7 +330,7 @@ class App extends React.Component<any, any> {
                     },
                     accountAddress: accountAddress[0],
                     // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-                    startAmount: price,
+                    startAmount: 0.001,
                 })
                 console.log(offer)
             });
