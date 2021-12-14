@@ -311,8 +311,8 @@ class App extends React.Component<any, any> {
         const ids = tokenIds.split(',')
 
         const seaport = new OpenSeaPort(window.web3.currentProvider, {
-            networkName: Network.Rinkeby,
-            // apiKey: YOUR_API_KEY
+            networkName: Network.Main,
+            //apiKey: "7e74c27dc34448d5903a309cc8079038",
         })
         // Token ID and smart contract address for a non-fungible token:
         // The offerer's wallet address:
@@ -320,9 +320,10 @@ class App extends React.Component<any, any> {
         const accountAddress = await web3.eth.getAccounts();
 
 
-        try {
+
             // createBuyOrder  buy one nft
             ids.forEach(async element => {
+                try {
                 const offer = await seaport.createBuyOrder({
                     asset: {
                         tokenId:element,
@@ -330,9 +331,15 @@ class App extends React.Component<any, any> {
                     },
                     accountAddress: accountAddress[0],
                     // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-                    startAmount: 0.001,
+                    startAmount: price,
                 })
                 console.log(offer)
+                } catch (error) {
+
+                    console.log(error)
+                    alert('make offer failed')
+                }
+
             });
 
             // let assets: { tokenId: string; tokenAddress: string; }[] = []
@@ -348,11 +355,7 @@ class App extends React.Component<any, any> {
             // })
             // console.log(offer)
             // alert('成功')
-        } catch (error) {
 
-            console.log(error)
-            alert('make offer failed')
-        }
 
     }
 
@@ -364,7 +367,7 @@ class App extends React.Component<any, any> {
         }
 
         const seaport = new OpenSeaPort(window.web3.currentProvider, {
-            networkName: Network.Rinkeby, //todo
+            networkName: Network.Main, //todo
         })
         const asset = await seaport.api.getAsset({
             tokenAddress: tokenAddress,
