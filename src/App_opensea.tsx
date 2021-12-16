@@ -18,11 +18,11 @@ import Wrapper from "./components/Wrapper";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
 import ConnectButton from "./components/ConnectButton";
-import {getChainData} from "./helpers/utilities";
-import {IAssetData} from "./helpers/types";
-import {fonts} from "./styles";
+import { getChainData } from "./helpers/utilities";
+import { IAssetData } from "./helpers/types";
+import { fonts } from "./styles";
 import "./style.css";
-import {ethers,BigNumber} from "ethers";
+import { ethers, BigNumber } from "ethers";
 
 
 const SLayout = styled.div`
@@ -106,12 +106,12 @@ interface IAppState {
     result: any | null;
     tokenAddress: string;
     tokenIds: string;
-    average_price:number;
-    floor_price:number;
-    total_volume:number;
-    one_day_average_price:number;
-    price:number;
-    approved:boolean
+    average_price: number;
+    floor_price: number;
+    total_volume: number;
+    one_day_average_price: number;
+    price: number;
+    approved: boolean
 }
 
 const INITIAL_STATE: IAppState = {
@@ -128,12 +128,12 @@ const INITIAL_STATE: IAppState = {
     pendingRequest: false,
     result: null,
     tokenAddress: "",
-    tokenIds:"",
-    one_day_average_price:0,
-    average_price:0,
-    floor_price:0,
-    total_volume:0,
-    price:0,
+    tokenIds: "",
+    one_day_average_price: 0,
+    average_price: 0,
+    floor_price: 0,
+    total_volume: 0,
+    price: 0,
     approved: false,
 
 };
@@ -206,7 +206,7 @@ class App extends React.Component<any, any> {
             address,
             chainId,
             networkId,
-            approved:false
+            approved: false
         });
 
 
@@ -218,25 +218,25 @@ class App extends React.Component<any, any> {
         }
         provider.on("close", () => this.resetApp());
         provider.on("accountsChanged", async (accounts: string[]) => {
-            await this.setState({address: accounts[0]});
+            await this.setState({ address: accounts[0] });
 
-            await  this.getApproval();
+            await this.getApproval();
             //await this.setState({approved: false});
 
         });
         provider.on("chainChanged", async (chainId: number) => {
-            const {web3} = this.state;
+            const { web3 } = this.state;
             const networkId = await web3.eth.net.getId();
-            await this.setState({chainId, networkId});
-            await  this.getApproval();
+            await this.setState({ chainId, networkId });
+            await this.getApproval();
 
         });
 
         provider.on("networkChanged", async (networkId: number) => {
-            const {web3} = this.state;
+            const { web3 } = this.state;
             const chainId = await web3.eth.chainId();
-            await this.setState({chainId, networkId});
-            await  this.getApproval();
+            await this.setState({ chainId, networkId });
+            await this.getApproval();
 
         });
     };
@@ -244,30 +244,30 @@ class App extends React.Component<any, any> {
     public getNetwork = () => getChainData(this.state.chainId).network;
 
     public resetApp = async () => {
-        const {web3} = this.state;
+        const { web3 } = this.state;
         if (web3 && web3.currentProvider && web3.currentProvider.close) {
             await web3.currentProvider.close();
         }
         await this.web3Modal.clearCachedProvider();
-        this.setState({...INITIAL_STATE});
+        this.setState({ ...INITIAL_STATE });
         //set opensea contract
     };
 
     public settokenAddress = (value: any) => {
-        this.setState({tokenAddress: value.target.value})
+        this.setState({ tokenAddress: value.target.value })
     }
 
     public settokenIds = (value: any) => {
-        this.setState({tokenIds: value.target.value})
+        this.setState({ tokenIds: value.target.value })
     }
 
     public setprice = (value: any) => {
-        this.setState({price: value.target.value})
+        this.setState({ price: value.target.value })
     }
 
 
 
-    public getApproval = async ()=> {
+    public getApproval = async () => {
         const provider = await this.web3Modal.connect();
         const prov = new ethers.providers.Web3Provider(provider);
         let web3 = new Web3(Web3.givenProvider);
@@ -279,12 +279,12 @@ class App extends React.Component<any, any> {
         // rinkeby testnet weth address 0xc778417e063141139fce010982780140aa0cd5ab ,https://rinkeby.etherscan.io/address/0xc778417e063141139fce010982780140aa0cd5ab#code
         // rinkeby testnet opensea contract 0x82d102457854c985221249f86659c9d6cf12aa72
         const currency = new ethers.Contract("0xc778417e063141139fce010982780140aa0cd5ab", abi, prov.getSigner())
-       // const allowance = await currency.allowance(account, getEthAddress(vaultInfo.contractAddress));
+        // const allowance = await currency.allowance(account, getEthAddress(vaultInfo.contractAddress));
         const allowance = await currency.allowance(accountAddress[0], "0x82d102457854c985221249f86659c9d6cf12aa72");
-        if (allowance.gte(BigNumber.from('100000000000000'))){
-            this.setState({approved:true})
+        if (allowance.gte(BigNumber.from('100000000000000'))) {
+            this.setState({ approved: true })
         } else {
-            this.setState({approved:false})
+            this.setState({ approved: false })
         }
 
     }
@@ -294,17 +294,17 @@ class App extends React.Component<any, any> {
         // const prov = new ethers.providers.Web3Provider(provider);
         // open modal
         const tokenIds = this.state.tokenIds;
-        if(tokenIds === ""){
+        if (tokenIds === "") {
             alert('Input token ID!')
             return
         }
         const tokenAddress = this.state.tokenAddress;
-        if(tokenAddress === ""){
+        if (tokenAddress === "") {
             alert('Input token contract address！')
             return
         }
         const price = this.state.price;
-        if(price === 0){
+        if (price === 0) {
             alert('input price > 0！')
             return
         }
@@ -321,12 +321,12 @@ class App extends React.Component<any, any> {
 
 
 
-            // createBuyOrder  buy one nft
-            ids.forEach(async element => {
-                try {
+        // createBuyOrder  buy one nft
+        ids.forEach(async element => {
+            try {
                 const offer = await seaport.createBuyOrder({
                     asset: {
-                        tokenId:element,
+                        tokenId: element,
                         tokenAddress,
                     },
                     accountAddress: accountAddress[0],
@@ -334,34 +334,34 @@ class App extends React.Component<any, any> {
                     startAmount: price,
                 })
                 console.log(offer)
-                } catch (error) {
+            } catch (error) {
 
-                    console.log(error)
-                    alert('make offer failed')
-                }
+                console.log(error)
+                alert('make offer failed')
+            }
 
-            });
+        });
 
-            // let assets: { tokenId: string; tokenAddress: string; }[] = []
-            // ids.forEach(element => {
-            //     assets.push({tokenId:element, tokenAddress:tokenAddress})
-            // });
-            // const offer = await seaport.createBundleBuyOrder({
-            //     assets,
-            //     accountAddress: accountAddress[0],
-            //     startAmount: price,
-            //     // Optional expiration time for the order, in Unix time (seconds):
-            //     // expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24) // One day from now
-            // })
-            // console.log(offer)
-            // alert('成功')
+        // let assets: { tokenId: string; tokenAddress: string; }[] = []
+        // ids.forEach(element => {
+        //     assets.push({tokenId:element, tokenAddress:tokenAddress})
+        // });
+        // const offer = await seaport.createBundleBuyOrder({
+        //     assets,
+        //     accountAddress: accountAddress[0],
+        //     startAmount: price,
+        //     // Optional expiration time for the order, in Unix time (seconds):
+        //     // expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24) // One day from now
+        // })
+        // console.log(offer)
+        // alert('成功')
 
 
     }
 
-    public getData = async() => {
+    public getData = async () => {
         const tokenAddress = this.state.tokenAddress;
-        if(tokenAddress === ""){
+        if (tokenAddress === "") {
             alert('NFT contract address required！') //0x256d31fb5439119026f1301d40ae748a8838c979
             return
         }
@@ -371,12 +371,12 @@ class App extends React.Component<any, any> {
         })
         const asset = await seaport.api.getAsset({
             tokenAddress: tokenAddress,
-            tokenId:null
+            tokenId: null
         })
         const status = asset.collection.stats as any
         console.log(asset.collection.stats)
 
-        this.setState({average_price: status['average_price'],floor_price: status['floor_price'],total_volume:status['total_volume'],one_day_average_price:status['one_day_average_price']})
+        this.setState({ average_price: status['average_price'], floor_price: status['floor_price'], total_volume: status['total_volume'], one_day_average_price: status['one_day_average_price'] })
     }
 
     public render = () => {
@@ -403,7 +403,7 @@ class App extends React.Component<any, any> {
                         {fetching ? (
                             <Column center>
                                 <SContainer>
-                                    <Loader/>
+                                    <Loader />
                                 </SContainer>
                             </Column>
                         ) : this.state.address ? (
@@ -411,36 +411,36 @@ class App extends React.Component<any, any> {
                                 <Column center>
                                     {/* <h6>当前时间:{this.state.curTime}</h6> */}
                                     <br /><h4>Project Detail</h4>
-                                        <p>Floor Price：{floor_price}</p>
-                                        <p>Average：{average_price}</p>
-                                        <p>Total Volume：{total_volume}</p>
-                                        <p>Average(Day)：{one_day_average_price}</p>
-                                        <br />
+                                    <p>Floor Price：{floor_price}</p>
+                                    <p>Average：{average_price}</p>
+                                    <p>Total Volume：{total_volume}</p>
+                                    <p>Average(Day)：{one_day_average_price}</p>
+                                    <br />
                                     <STestButtonContainer>
                                         <h4>NFT Contract Address</h4>
-                                        <STestInput style={{height:'40px'}} value={this.state.tokenAddress} onChange={this.settokenAddress}></STestInput>
+                                        <STestInput style={{ height: '40px' }} value={this.state.tokenAddress} onChange={this.settokenAddress}></STestInput>
                                         <h4>TokenID(separate by ",")</h4>
-                                        <STestInput style={{height:'40px'}} value={this.state.tokenIds} onChange={this.settokenIds}></STestInput>
+                                        <STestInput style={{ height: '40px' }} value={this.state.tokenIds} onChange={this.settokenIds}></STestInput>
 
                                         <h4>Listed Price</h4>
-                                        <STestInput style={{height:'40px'}} value={this.state.price} onChange={this.setprice}></STestInput>
+                                        <STestInput style={{ height: '40px' }} value={this.state.price} onChange={this.setprice}></STestInput>
 
                                         <STestButton left onClick={() => this.getData()}>
                                             Query
                                         </STestButton>
                                         {this.state.approved !== true ?
                                             <div>
-                                        <h6 style={{color:'Brown'}}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>
-                                        <h6 style={{color:'Brown'}}>For safety reasons, you are strongly advised to do the permission on Opensea market.</h6>
-                                        <STestButton left onClick={() => this.getApproval()}>
-                                            Check Approved WETH permission
-                                        </STestButton></div>
+                                                <h6 style={{ color: 'Brown' }}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>
+                                                <h6 style={{ color: 'Brown' }}>For safety reasons, you are strongly advised to do the permission on Opensea market.</h6>
+                                                <STestButton left onClick={() => this.getApproval()}>
+                                                    Check Approved WETH permission
+                                                </STestButton></div>
                                             :
 
-                                        <STestButton left onClick={() => this.buy()}>
-                                            Make Offer
-                                        </STestButton>
-                                            }
+                                            <STestButton left onClick={() => this.buy()}>
+                                                Make Offer
+                                            </STestButton>
+                                        }
 
                                     </STestButtonContainer>
                                 </Column>
@@ -449,7 +449,7 @@ class App extends React.Component<any, any> {
                         ) : (
                             <SLanding center>
                                 <h6>{`Cybert Lab for Opensea Floor Price`}</h6>
-                                <ConnectButton onClick={this.onConnect}/>
+                                <ConnectButton onClick={this.onConnect} />
                             </SLanding>
                         )}
                     </SContent>
