@@ -23,9 +23,9 @@ declare global {
 }
 
 ReactDOM.render(
-  <>
+  <div>
     <GlobalStyle />
     <App />
-  </>,
+  </div>,
   document.getElementById("root")
 );

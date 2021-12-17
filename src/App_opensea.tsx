@@ -464,6 +464,10 @@ class App extends React.Component<any, any> {
                     <STestButton left onClick={() => this.getData()}>
                       Query
                     </STestButton>
+
+
+
+                    {/* todo: before query */}
                     {this.state.approved !== true ?
                       <div>
                         <h6 style={{ color: 'Brown' }}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>

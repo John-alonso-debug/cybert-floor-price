@@ -22,19 +22,25 @@ const SActiveAccount = styled.div`
   align-items: center;
   position: relative;
   font-weight: 500;
+  color: #ef4444;
 `;
 
 const SActiveChain = styled(SActiveAccount)`
   flex-direction: column;
   text-align: left;
   align-items: flex-start;
-  & p {
-    font-size: 0.5em;
+
+
+  & div {
+    font-size: 0.6em;
     margin: 0;
     padding: 0;
+    color: #6b21a8;
   }
-  & p:nth-child(2) {
+  & div:nth-child(2) {
     font-weight: bold;
+    color: #ef4444; // #6b21a8
+
   }
 `;
 
@@ -87,9 +93,10 @@ const Header = (props: IHeaderProps) => {
 
       {connected && chainData ? (
         <SActiveChain>
-          <p><Banner /></p>
-          <p>{`Connected to`}</p>
-          <p>{chainData.name}</p>
+
+          <div><Banner /></div>
+          <div >{`Connected to`}</div>
+          <div>{chainData.name}</div>
         </SActiveChain>
       ) : (
         <Banner />
