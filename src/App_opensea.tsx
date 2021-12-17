@@ -58,8 +58,9 @@ const SLanding = styled(Column)`
 // @ts-ignore
 const SBalances = styled(SLanding)`
   height: 100%;
-  & h3 {
+  & h4 {
     padding-top: 10px;
+    color: #7e22ce;
   }
 `;
 
@@ -470,8 +471,8 @@ class App extends React.Component<any, any> {
                     {/* todo: before query */}
                     {this.state.approved !== true ?
                       <div>
-                        <h6 style={{ color: 'Brown' }}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>
-                        <h6 style={{ color: 'Brown' }}>For safety reasons, you are strongly advised to do the permission on Opensea market.</h6>
+                        <h6 style={{ color: '#ef4444' }}>Before making offer you have to approve WETH used by Opensea marketplace.</h6>
+                        <h6 style={{ color: '#ef4444' }}>For safety reasons, you are strongly advised to do the permission on Opensea market.</h6>
                         <STestButton left onClick={() => this.getApproval()}>
                           Check Approved WETH permission
                         </STestButton></div>
